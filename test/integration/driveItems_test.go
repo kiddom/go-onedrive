@@ -49,19 +49,6 @@ func TestDriveItems_GetMusicFolder(t *testing.T) {
 	fmt.Printf("Music DriveItem Id: %v\n", musicDriveItem.Id)
 }
 
-func TestDriveItems_Search(t *testing.T) {
-	ctx, client := setup()
-
-	filter := "filter=folder ne null"
-	response, err := client.DriveItems.Search(ctx, "(q='With open ended - 43340')?", &filter)
-	if err != nil {
-		t.Errorf("Error: %v\n", err)
-		return
-	}
-
-	t.Logf("Search response %v\n", response)
-}
-
 func TestDriveItems_GetItemsInMusicFolder(t *testing.T) {
 	ctx, client := setup()
 

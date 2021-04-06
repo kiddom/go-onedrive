@@ -25,12 +25,13 @@ func TestDriveSearch_Search(t *testing.T) {
 func TestDriveSearch_SearchWithApostrophe(t *testing.T) {
 	ctx, client := setup()
 
-	searchDriveItems, err := client.DriveSearch.Search(ctx, "Rabbit's")
+	filter := "filter=folder ne null"
+	searchDriveItems, err := client.DriveSearch.Search(ctx, "With open ended - 43340", &filter)
 	if err != nil {
 		t.Errorf("Error: %v\n", err)
 		return
 	}
 	for _, driveItem := range searchDriveItems.DriveItems {
-		fmt.Printf("Results: %v\n", driveItem.Name)
+		fmt.Printf("Results: %v\n", driveItem)
 	}
 }

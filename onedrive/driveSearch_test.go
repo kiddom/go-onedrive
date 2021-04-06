@@ -28,7 +28,7 @@ func TestDriveSearchService_SearchWithEmptyQuery_authenticatedUser(t *testing.T)
 	})
 
 	ctx := context.Background()
-	_, err := client.DriveSearch.Search(ctx, "")
+	_, err := client.DriveSearch.Search(ctx, "", nil)
 	if err == nil {
 		t.Errorf("There should be an error")
 	}
@@ -48,7 +48,7 @@ func TestDriveSearchService_SearchDriveItems_authenticatedUser(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	gotOneDriveResponse, err := client.DriveSearch.Search(ctx, "Test")
+	gotOneDriveResponse, err := client.DriveSearch.Search(ctx, "Test", nil)
 	if err != nil {
 		t.Errorf("DriveSearch.Search returned error: %v", err)
 	}
