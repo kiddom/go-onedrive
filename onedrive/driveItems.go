@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"os"
 
@@ -30,17 +31,18 @@ type OneDriveDriveItemsResponse struct {
 // DriveItem represents a OneDrive drive item.
 // Ref https://docs.microsoft.com/en-us/graph/api/resources/driveitem?view=graph-rest-1.0
 type DriveItem struct {
-	Name        string           `json:"name"`
-	Id          string           `json:"id"`
-	DownloadURL string           `json:"@microsoft.graph.downloadUrl"`
-	Description string           `json:"description"`
-	WebURL      string           `json:"webUrl"`
-	Audio       *OneDriveAudio   `json:"audio"`
-	Video       *OneDriveVideo   `json:"video"`
-	Image       *OneDriveImage   `json:"image"`
-	Photo       *OneDrivePhoto   `json:"photo"`
-	File        *DriveItemFile   `json:"file"`
-	Folder      *DriveItemFolder `json:"folder"`
+	Name         string           `json:"name"`
+	Id           string           `json:"id"`
+	DownloadURL  string           `json:"@microsoft.graph.downloadUrl"`
+	Description  string           `json:"description"`
+	WebURL       string           `json:"webUrl"`
+	Audio        *OneDriveAudio   `json:"audio"`
+	Video        *OneDriveVideo   `json:"video"`
+	Image        *OneDriveImage   `json:"image"`
+	Photo        *OneDrivePhoto   `json:"photo"`
+	File         *DriveItemFile   `json:"file"`
+	Folder       *DriveItemFolder `json:"folder"`
+	ParentFolder *ParentReference `json:"parentReference"`
 }
 
 // DriveItemFile represents a OneDrive drive item file info.
@@ -165,6 +167,26 @@ func (s *DriveItemsService) ListSpecial(ctx context.Context, folderName DriveSpe
 	apiURL := "me/drive/special/" + url.PathEscape(folderName.toString()) + "/children"
 
 	req, err := s.client.NewRequest("GET", apiURL, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var oneDriveResponse *OneDriveDriveItemsResponse
+	err = s.client.Do(ctx, req, false, &oneDriveResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	return oneDriveResponse, nil
+}
+
+// Search the hierarchy of items for items matching a query.
+// You can search within a folder hierarchy, a whole drive, or files shared with the current user.
+//
+// OneDrive API docs: https://docs.microsoft.com/en-us/onedrive/developer/rest-api/resources/driveitem?view=odsp-graph-online
+func (s *DriveItemsService) Search(ctx context.Context, searchQuery string) (*OneDriveDriveItemsResponse, error) {
+	apiURL := "me/drive/root/search" + url.PathEscape(searchQuery)
+	req, err := s.client.NewRequest(http.MethodGet, apiURL, nil)
 	if err != nil {
 		return nil, err
 	}
