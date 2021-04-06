@@ -98,3 +98,32 @@ func TestDriveItemsService_Get_authenticatedUser(t *testing.T) {
 	}
 
 }
+
+func TestDriveItemsService_Search_authenticatedUser(t *testing.T) {
+	client, mux, _, teardown := setup()
+
+	defer teardown()
+	jsonData := getTestDataFromFile(t, "fake_driveItems_searchResults.json")
+	var wantDriveItem *OneDriveDriveSearchResponse
+	if err := json.Unmarshal(jsonData, &wantDriveItem); err != nil {
+		t.Fatal(err)
+	}
+
+	query := fmt.Sprintf("(q='Test')")
+	mux.HandleFunc("/me/drive/root/search(q='Test')", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodGet)
+
+		fmt.Fprint(w, string(jsonData))
+	})
+
+	ctx := context.Background()
+
+	gotDriveItem, err := client.DriveItems.Search(ctx, query)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !reflect.DeepEqual(gotDriveItem, wantDriveItem) {
+		t.Errorf("Drives.Item returned %+v, want %+v", gotDriveItem, wantDriveItem)
+	}
+}
