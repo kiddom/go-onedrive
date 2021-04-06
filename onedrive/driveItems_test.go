@@ -118,7 +118,7 @@ func TestDriveItemsService_Search_authenticatedUser(t *testing.T) {
 
 	ctx := context.Background()
 
-	gotDriveItem, err := client.DriveItems.Search(ctx, query)
+	gotDriveItem, err := client.DriveItems.Search(ctx, query, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

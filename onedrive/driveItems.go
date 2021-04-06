@@ -184,8 +184,14 @@ func (s *DriveItemsService) ListSpecial(ctx context.Context, folderName DriveSpe
 // You can search within a folder hierarchy, a whole drive, or files shared with the current user.
 //
 // OneDrive API docs: https://docs.microsoft.com/en-us/onedrive/developer/rest-api/resources/driveitem?view=odsp-graph-online
-func (s *DriveItemsService) Search(ctx context.Context, searchQuery string) (*OneDriveDriveSearchResponse, error) {
+func (s *DriveItemsService) Search(
+	ctx context.Context, searchQuery string, filter *string,
+) (*OneDriveDriveSearchResponse, error) {
 	apiURL := "me/drive/root/search" + searchQuery
+	if filter != nil {
+		apiURL = "me/drive/root/search" + searchQuery + "?" + url.PathEscape(*filter)
+	}
+
 	req, err := s.client.NewRequest(http.MethodGet, apiURL, nil)
 	if err != nil {
 		return nil, err

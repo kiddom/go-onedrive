@@ -8,7 +8,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/goh-chunlin/go-onedrive/onedrive"
+	"github.com/kiddom/go-onedrive/onedrive"
 
 	"golang.org/x/oauth2"
 )
