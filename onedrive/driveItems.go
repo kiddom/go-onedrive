@@ -9,7 +9,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 	"net/url"
 	"os"
 
@@ -167,26 +166,6 @@ func (s *DriveItemsService) ListSpecial(ctx context.Context, folderName DriveSpe
 	apiURL := "me/drive/special/" + url.PathEscape(folderName.toString()) + "/children"
 
 	req, err := s.client.NewRequest("GET", apiURL, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var oneDriveResponse *OneDriveDriveItemsResponse
-	err = s.client.Do(ctx, req, false, &oneDriveResponse)
-	if err != nil {
-		return nil, err
-	}
-
-	return oneDriveResponse, nil
-}
-
-// Search the hierarchy of items for items matching a query.
-// You can search within a folder hierarchy, a whole drive, or files shared with the current user.
-//
-// OneDrive API docs: https://docs.microsoft.com/en-us/onedrive/developer/rest-api/resources/driveitem?view=odsp-graph-online
-func (s *DriveItemsService) Search(ctx context.Context, searchQuery string) (*OneDriveDriveItemsResponse, error) {
-	apiURL := "me/drive/root/search" + url.PathEscape(searchQuery)
-	req, err := s.client.NewRequest(http.MethodGet, apiURL, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -216,7 +216,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, isUsingPlainHttpClie
 		var oneDriveError *ErrorResponse
 		json.NewDecoder(responseBodyReader).Decode(&oneDriveError)
 
-		if oneDriveError.Error != nil {
+		if oneDriveError != nil && oneDriveError.Error != nil {
 			if oneDriveError.Error.InnerError != nil {
 				return errors.New(oneDriveError.Error.Code + " - " + oneDriveError.Error.Message + " (" + oneDriveError.Error.InnerError.Date + ")")
 			}
